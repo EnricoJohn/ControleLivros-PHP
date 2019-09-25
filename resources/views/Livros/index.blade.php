@@ -8,10 +8,7 @@ Livros
 
 @section('conteudo')
 
-<a href="/home" ><h3>Home</h3></a>
-<ul class='list-group'>
-
-    @if(!empty($mensagem))
+@if(!empty($mensagem))
         <div class='alert alert-success'>
             {{$mensagem}}
         </div>
@@ -22,14 +19,18 @@ Livros
             {{$mensagemRegistroApagado}}
         </div>
     @endif
-    
+
+<a href="/home" ><h3>Home</h3></a>
+
+<ul class='list-group'>
     @foreach($livros as $livro)
-        <li class='list-group-item'>
-            {{ $livro->nome }}
+        <li class='list-group-item d-flex justify-content-between align-items-center'>
+            {{ $livro->nm_livro }}
             <form method='post' action="/livros/{{ $livro->id }}" 
                   onsubmit='return confirm("Tem certeza que deseja remover {{ $livro->nome }}?")'>
                 @csrf
-                <button class='btn btn-danger'>Excluir</button>
+                @method('DELETE')
+                <button class='btn btn-danger btn-sm'>Excluir</button>
             </form>
         </li>
     @endforeach

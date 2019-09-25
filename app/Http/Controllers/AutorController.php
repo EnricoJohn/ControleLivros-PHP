@@ -20,19 +20,20 @@ class AutorController extends Controller
         return view('autores.index', compact('autores'));
     }
 
-    public function destroy(Request $request)
+    public function destroya(Request $request)
     {
-        $autor = Autor::find($request->id);
-
-        $autor->delete();
+        Autor::destroy($request->id);
 
         return redirect('/autor');
     }
 
     public function store(Request $request) {
-        
+        /*
+        $this->validate($request, [
+            'nm_autor'    => 'required',
+        ]);*/
+
         $autor = new Autor([
-            'id_autor'     => rand(10000,100000),
             'nm_autor'     => $request->input('autor'),
         ]);
                 

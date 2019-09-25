@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\LivroModel;
+use App\Models\Livro;
 use App\Models\Autor;
-
-//@foreach($autores as $autor)
-//{{ $autor->nm_autor }}
-//@endforeach
+use App\Models\Capitulos;
 
 
 class LivroController extends Controller
@@ -19,8 +16,8 @@ class LivroController extends Controller
     public function index(Request $request)
     {   
         //$LivroModel = json_decode(DB::table('livro')->select('nome')->get(), true);
-        $livros = LivroModel::query()
-            -> orderBy('nome_livro')    
+        $livros = Livro::query()
+            -> orderBy('nm_livro')    
             -> get();
 
         $mensagem = $request -> session()->get('mensagem');
@@ -34,8 +31,8 @@ class LivroController extends Controller
     public function create() 
     {  
         $autores = Autor::query()
-        -> orderBy('nm_autor')
-        -> get();
+                 -> orderBy('id')
+                 -> get();
         
 
         return view('livros.create', compact('autores'));
@@ -43,46 +40,60 @@ class LivroController extends Controller
 
     public function destroy(Request $request)
     {
-        LivroModel::destroy($request->id);
+        var_dump($request->id);
+        Livro::destroy($request->id);
 
-        $request->session()
+        /*$request->session()
             ->flash('mensagemRegistroApagado', 
                 "Livro foi removido com sucesso."
             );
-
+*/  
         return redirect('/livros');
     }
      
     public function store(Request $request) 
     {
-        //$livro = LivroModel::create($request->all());
-        $nm_autor = $request->input('autor');
-        var_dump($nm_autor);
-        $autor = Autor::find($nm_autor);
-        var_dump($autor);
-        /*$this->validate($request, [
-            'nome_livro'     => 'required',
-            'autor'          => 'required',
-            'capitulos'      => 'required',
+        
+
+        $autor = $request->input('autor');
+
+        $idAutor = Autor::where('nm_autor', $autor)->pluck('id')->toArray();
+
+        
+        //var_dump($autor);
+        //var_dump($idAutor[0]);
+        /*
+        $this->validate($request, [
+            'nm_livro'              => 'required',
+            'id'              => 'required',
+            'capitulos'             => 'required',
         ]);
             */
-        $livro =  new LivroModel([
-            'nome_livro'          => $request->input('nome'),
-            'autor'               => $nm_autor,
-            'capitulos'           => $request->input('capitulos'),
+        $livro =  new Livro([
+            'nm_livro'                => $request->input('nm_livro'),
+            'autor_id'                => $idAutor[0],
         ]);
+    
+        $livro->save();
+            
+        $qtd_capitulos = $request->input('capitulos');
         
-        //var_dump($livro->nome_livro);
-        //var_dump($livro->autor);
-        //var_dump($livro->capitulos);
+        
+        for ($i = 1; $i <= $qtd_capitulos; $i++) {
 
-        //$livro->save();
+            $capitulo = new Capitulos([
+                'capitulo'      => $i,
+                'livro_id'      =>$livro->id,
+           ]);
+           $capitulo->save();
+        }
+    
 
         $request->session()
             ->flash('mensagem', 
                 "Livro {$livro->id} - {$livro->nome} foi criado com sucesso."
             );
         
-        //return redirect('/livros');
+        return redirect('/livros');
     }
 }

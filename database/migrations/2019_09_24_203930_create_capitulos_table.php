@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Autor extends Migration
+class CreateCapitulosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class Autor extends Migration
      */
     public function up()
     {
-        Schema::create('autor', function (Blueprint $table) {
+        Schema::create('capitulos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nm_autor')->unique();
-            $table->timestamps();
+            $table->bigInteger('capitulo');
+            $table->unsignedBigInteger('livro_id');
+
+            $table->foreign('livro_id')
+                  ->references('id')
+                  ->on('livros')->onDelete('cascade');
         });
     }
 
@@ -27,6 +31,6 @@ class Autor extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('capitulos');
     }
 }

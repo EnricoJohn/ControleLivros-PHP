@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class TabelaLivros extends Migration
+class Livros extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class TabelaLivros extends Migration
      */
     public function up()
     {
-        Schema::create('livro', function (Blueprint $table) {
+        Schema::create('livros', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('id_livro')->unique();
-            $table->string('nome_livro')->unique();
-            $table->integer('id_autor')->unsigned();
-            $table->integer('capitulos')->unsigned();
+            $table->string('nm_livro');
+            $table->unsignedBigInteger('autor_id');
             $table->timestamps();
+            $table->foreign('autor_id')
+                  ->references('id')
+                  ->on('autor')->onDelete('cascade');
+
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -30,6 +31,6 @@ class TabelaLivros extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('livro');
+        //
     }
 }

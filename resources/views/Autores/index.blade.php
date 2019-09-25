@@ -24,7 +24,7 @@ Autores
     @foreach($autores as $autor)
         <li class='list-group-item'>
             {{ $autor->nm_autor }}
-            <form method='post' action="/autor/{{ $autor->id_autor }}" 
+            <form method='post' action="/autor/{{ $autor->id}}" 
                   onsubmit='return confirm("Tem certeza que deseja remover {{ $autor->nm_autor }}?")'>
                 @csrf
                 <button class='btn btn-danger'>Excluir</button>
@@ -32,7 +32,7 @@ Autores
         </li>
     @endforeach
 </ul>
-
+<a class='btn btn-dark mt-2' href='/livros'>Voltar</a> 
 
 @endsection
 
